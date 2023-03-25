@@ -2,7 +2,7 @@
 using Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Presentation
+namespace Persistence
 {
     public class ApplicationDbContext : DbContext, IApplicationDbContext
     {

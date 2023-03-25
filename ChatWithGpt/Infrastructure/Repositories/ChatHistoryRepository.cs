@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
-    public class ChatHistoryRepository : IRepository<ChatHistory>
+    public class ChatHistoryRepository : IChatHistoryRepository
     {
         private readonly IApplicationDbContext _dbContext;
 
@@ -40,7 +40,7 @@ namespace Infrastructure.Repositories
 
         public async Task<bool> Delete(int id, CancellationToken token)
         {
-            var chat = await _dbContext.ChatHistory.FindAsync(new object[] { id }, token: token);
+            var chat = await _dbContext.ChatHistory.FindAsync(new object[] { id }, cancellationToken: token);
             if (chat == null) return false;
 
             _dbContext.ChatHistory.Remove(chat);

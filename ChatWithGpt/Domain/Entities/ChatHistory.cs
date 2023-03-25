@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Net;
 
 namespace Domain.Entities
 {
@@ -7,6 +7,7 @@ namespace Domain.Entities
         public string Topic { get; set; }
         public Request Request { get; set; }
         public Response Response { get; set; }
+        public HttpStatusCode StatusCode { get; set; }
         public DateTime DateTime { get; set; }
     }
 }

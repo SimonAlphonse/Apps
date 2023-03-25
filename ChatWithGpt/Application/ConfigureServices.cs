@@ -1,13 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Domain.Managers;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Extensions.DependencyInjection
 {
-    internal static class ConfigureServices
+    public static class ConfigureServices
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services)
         {
-            
-
+            services.AddTransient<IChatManager, ChatManager>();
             return services;
         }
     }

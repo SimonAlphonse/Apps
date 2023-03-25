@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Repositories;
 
+using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Net.Http.Headers;
@@ -11,19 +12,19 @@ namespace Domain.Managers
 {
     public class ChatManager : IChatManager
     {
-        private IRepository<ChatHistory> _repository;
+        private IChatHistoryRepository _repository;
 
         private decimal _temperature;
         private HttpClient _httpClient;
 
-        public ChatManager(ILogger<ChatManager> logger, 
-            IRepository<ChatHistory> repository,
+        public ChatManager(ILogger<ChatManager> logger,
+            IChatHistoryRepository repository,
             IHttpClientFactory httpClientFactory,
             IConfiguration configuration)
         {
             _repository = repository;
             _httpClient = httpClientFactory.CreateClient(Constants.HttpClientFactory.OPEN_AI);
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", configuration.GetSection("Chat:Bearer").Value);
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", configuration.GetSection("Chat:ApiKey").Value);
             _temperature = Convert.ToDecimal(configuration.GetSection("Chat:Temperature").Value);
         }
 
@@ -48,20 +49,22 @@ namespace Domain.Managers
             {
                 Model = Constants.GPT_3_5_TURBO,
                 Temperature = _temperature,
-                //RequestMessages = messages
+                Messages = messages
             };
 
-            var payload = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            var jsonRequest = JsonSerializer.Serialize(request);
+            var payload = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
             var responseMessage = await _httpClient.PostAsync("chat/completions", payload, token);
 
             if (responseMessage.IsSuccessStatusCode)
             {
                 var responseBody = responseMessage.Content.ReadAsStringAsync().Result;
                 var response = JsonSerializer.Deserialize<Response>(responseBody);
-                var choice = response!.Choices.Last();
 
                 await _repository.Create(new ChatHistory
                 {
+                    //StatusCode = responseMessage.StatusCode,
+                    StatusCode = HttpStatusCode.OK,
                     DateTime = DateTime.UtcNow,
                     Topic = topic,
                     Request = request,
@@ -70,8 +73,17 @@ namespace Domain.Managers
 
                 return response;
             }
+            else
+            {
+#if DEBUG
+                var displayMessage = $"{responseMessage.StatusCode} : {responseMessage.ReasonPhrase}";
+                throw new Exception(displayMessage);
+#else
+                throw new Exception(":( Something went wrong !");
+#endif
 
-            throw new Exception(":( Something went wrong !");
+            }
+
         }
     }
 }

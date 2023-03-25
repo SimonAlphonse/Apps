@@ -1,13 +1,15 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Domain.Repositories;
+using Infrastructure.Repositories;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Extensions.DependencyInjection
 {
-    internal static class ConfigureServices
+    public static class ConfigureServices
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static IServiceCollection ConfigureInfrastructureServices(this IServiceCollection services)
         {
-            
-
+            services.AddScoped<IChatHistoryRepository, ChatHistoryRepository>();
             return services;
         }
     }

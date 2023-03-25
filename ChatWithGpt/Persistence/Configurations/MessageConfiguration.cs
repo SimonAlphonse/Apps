@@ -5,12 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence.Configurations
 {
-    internal class ChoiceConfiguration : IEntityTypeConfiguration<Choice>
+    internal class MessageConfiguration : IEntityTypeConfiguration<Message>
     {
-        public void Configure(EntityTypeBuilder<Choice> builder)
+        public void Configure(EntityTypeBuilder<Message> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.HasOne(o => o.Message);
         }
     }
 }

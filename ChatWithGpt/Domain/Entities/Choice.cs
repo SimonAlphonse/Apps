@@ -1,10 +1,14 @@
-﻿namespace Domain.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace Domain.Entities
 {
     public class Choice : BaseEntity
     {
-        public int Index { get; set; }
-        public int ResponseId { get; set; }
-        public string FinishReason { get; set; }
+        [JsonPropertyName("message")]
         public Message Message { get; set; }
+        [JsonPropertyName("finish_reason")]
+        public string FinishReason { get; set; }
+        [JsonPropertyName("index")]
+        public int Index { get; set; }
     }
 }

@@ -1,14 +1,24 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Application.Interfaces;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Persistence.Extensions.DependencyInjection
 {
-    internal static class ConfigureServices
+    public static class ConfigureServices
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static IServiceCollection ConfigurePersistenceServices(this IServiceCollection services)
         {
-            
-
+            services.AddDbContext<IApplicationDbContext, ApplicationDbContext>();
             return services;
+        }
+
+        public static void ConfigureDatabase(this IServiceProvider serviceProvider)
+        {
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                context.Database.EnsureCreated();
+            }
         }
     }
 }

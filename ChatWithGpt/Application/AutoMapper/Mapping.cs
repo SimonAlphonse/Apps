@@ -8,7 +8,7 @@ namespace Application.AutoMapper
     {
         public void MappingProfile()
         {
-            //CreateMap<Data.ChatHistory, ChatHistory>();
+            //CreateMap<Message, App.Message>();
         }
     }
 }
