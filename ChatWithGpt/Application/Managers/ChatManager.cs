@@ -34,12 +34,11 @@ namespace Domain.Managers
 
             if (topic is not null)
             {
-                var chats = await _repository.Get(x => x.Topic == topic, token);
-                if (chats.Count > 0)
+                var chats = await _repository.Get(x => x.Topic == topic && x.StatusCode == HttpStatusCode.OK, token);
+                foreach (var chat in chats.OrderBy(o => o.Id))
                 {
-                    var previous = chats.Select(s => s.Response.Choices
-                        .Where(w => w.FinishReason == "stop").Last().Message);
-                    messages.AddRange(previous);
+                    messages.Add(chat.Request.Messages.Last());
+                    messages.Add(chat.Response.Choices.Last().Message);
                 }
             }
 
@@ -63,8 +62,7 @@ namespace Domain.Managers
 
                 await _repository.Create(new ChatHistory
                 {
-                    //StatusCode = responseMessage.StatusCode,
-                    StatusCode = HttpStatusCode.OK,
+                    StatusCode = responseMessage.StatusCode,
                     DateTime = DateTime.UtcNow,
                     Topic = topic,
                     Request = request,
@@ -81,7 +79,6 @@ namespace Domain.Managers
 #else
                 throw new Exception(":( Something went wrong !");
 #endif
-
             }
 
         }
