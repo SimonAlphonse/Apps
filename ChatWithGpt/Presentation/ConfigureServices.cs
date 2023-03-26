@@ -4,7 +4,7 @@ namespace Presenation.Extensions.DependencyInjection
 {
     internal static class ConfigureServices
     {
-        public static IServiceCollection ConfigurePresenationServices(this IServiceCollection services)
+        public static IServiceCollection AddPresenation(this IServiceCollection services)
         {
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();

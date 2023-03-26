@@ -6,7 +6,7 @@ namespace Persistence.Extensions.DependencyInjection
 {
     public static class ConfigureServices
     {
-        public static IServiceCollection ConfigurePersistenceServices(this IServiceCollection services)
+        public static IServiceCollection AddPersistence(this IServiceCollection services)
         {
             services.AddDbContext<IApplicationDbContext, ApplicationDbContext>();
             return services;

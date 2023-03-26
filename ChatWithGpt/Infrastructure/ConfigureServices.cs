@@ -7,7 +7,7 @@ namespace Infrastructure.Extensions.DependencyInjection
 {
     public static class ConfigureServices
     {
-        public static IServiceCollection ConfigureInfrastructureServices(this IServiceCollection services)
+        public static IServiceCollection Infrastructure(this IServiceCollection services)
         {
             services.AddScoped<IChatHistoryRepository, ChatHistoryRepository>();
             return services;

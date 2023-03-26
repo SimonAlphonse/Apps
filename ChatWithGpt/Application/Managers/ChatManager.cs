@@ -12,29 +12,31 @@ namespace Domain.Managers
 {
     public class ChatManager : IChatManager
     {
+        private ILogger<ChatManager> _logger;
         private IChatHistoryRepository _repository;
 
         private decimal _temperature;
         private HttpClient _httpClient;
 
         public ChatManager(ILogger<ChatManager> logger,
-            IChatHistoryRepository repository,
             IHttpClientFactory httpClientFactory,
+            IChatHistoryRepository repository,
             IConfiguration configuration)
         {
+            _logger = logger;
             _repository = repository;
             _httpClient = httpClientFactory.CreateClient(Constants.HttpClientFactory.OPEN_AI);
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", configuration.GetSection("Chat:ApiKey").Value);
             _temperature = Convert.ToDecimal(configuration.GetSection("Chat:Temperature").Value);
         }
 
-        public async Task<Response> SendMessage(string topic, string content, CancellationToken token)
+        public async Task<Response> SendMessage(string title, string content, CancellationToken token)
         {
             var messages = new List<Message>();
 
-            if (topic is not null)
+            if (title is not null)
             {
-                var chats = await _repository.Get(x => x.Topic == topic && x.StatusCode == HttpStatusCode.OK, token);
+                var chats = await _repository.Get(x => x.Title == title && x.StatusCode == HttpStatusCode.OK, token);
                 foreach (var chat in chats.OrderBy(o => o.Id))
                 {
                     messages.Add(chat.Request.Messages.Last());
@@ -48,23 +50,23 @@ namespace Domain.Managers
             {
                 Model = Constants.GPT_3_5_TURBO,
                 Temperature = _temperature,
-                Messages = messages
+                Messages = messages,
             };
 
             var jsonRequest = JsonSerializer.Serialize(request);
             var payload = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
             var responseMessage = await _httpClient.PostAsync("chat/completions", payload, token);
+            var responseBody = responseMessage.Content.ReadAsStringAsync().Result;
 
             if (responseMessage.IsSuccessStatusCode)
             {
-                var responseBody = responseMessage.Content.ReadAsStringAsync().Result;
                 var response = JsonSerializer.Deserialize<Response>(responseBody);
 
                 await _repository.Create(new ChatHistory
                 {
                     StatusCode = responseMessage.StatusCode,
                     DateTime = DateTime.UtcNow,
-                    Topic = topic,
+                    Title = title,
                     Request = request,
                     Response = response
                 }, token);
@@ -73,14 +75,9 @@ namespace Domain.Managers
             }
             else
             {
-#if DEBUG
-                var displayMessage = $"{responseMessage.StatusCode} : {responseMessage.ReasonPhrase}";
-                throw new Exception(displayMessage);
-#else
-                throw new Exception(":( Something went wrong !");
-#endif
+                _logger.LogInformation(responseBody);
+                throw new Exception($"{responseMessage.StatusCode} : {responseMessage.ReasonPhrase}");
             }
-
         }
     }
 }
