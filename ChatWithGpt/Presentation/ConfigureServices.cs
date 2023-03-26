@@ -6,6 +6,10 @@ namespace Presenation.Extensions.DependencyInjection
     {
         public static IServiceCollection AddPresenation(this IServiceCollection services)
         {
+            services.AddControllers();
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
+
             var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
 
@@ -17,6 +21,23 @@ namespace Presenation.Extensions.DependencyInjection
             });
 
             return services;
+        }
+
+        public static WebApplication ConfigurePresentation(this WebApplication app)
+        {
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseAuthorization();
+
+            app.MapControllers();
+
+            return app;
         }
     }
 }

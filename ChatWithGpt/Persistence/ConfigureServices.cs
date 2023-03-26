@@ -12,13 +12,14 @@ namespace Persistence.Extensions.DependencyInjection
             return services;
         }
 
-        public static void ConfigureDatabase(this IServiceProvider serviceProvider)
+        public static IServiceProvider ConfigurePersistence(this IServiceProvider serviceProvider)
         {
             using (var scope = serviceProvider.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 context.Database.EnsureCreated();
             }
+            return serviceProvider;
         }
     }
 }
