@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Persistence.Extensions.DependencyInjection
@@ -12,14 +13,14 @@ namespace Persistence.Extensions.DependencyInjection
             return services;
         }
 
-        public static IServiceProvider UsePersistence(this IServiceProvider serviceProvider)
+        public static WebApplication UsePersistence(this WebApplication app)
         {
-            using (var scope = serviceProvider.CreateScope())
+            using (var scope = app.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 context.Database.EnsureCreated();
             }
-            return serviceProvider;
+            return app;
         }
     }
 }

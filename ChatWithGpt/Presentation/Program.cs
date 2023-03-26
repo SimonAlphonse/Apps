@@ -17,6 +17,6 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 
 app.UsePresentation();
-//app.Services.UsePersistence();
+app.Services.UsePersistence();
 
 app.Run();
