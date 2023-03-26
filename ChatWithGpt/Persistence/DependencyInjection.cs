@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Persistence.Extensions.DependencyInjection
 {
-    public static class ConfigureServices
+    public static class DependencyInjection
     {
         public static IServiceCollection AddPersistence(this IServiceCollection services)
         {
@@ -12,7 +12,7 @@ namespace Persistence.Extensions.DependencyInjection
             return services;
         }
 
-        public static IServiceProvider ConfigurePersistence(this IServiceProvider serviceProvider)
+        public static IServiceProvider UsePersistence(this IServiceProvider serviceProvider)
         {
             using (var scope = serviceProvider.CreateScope())
             {

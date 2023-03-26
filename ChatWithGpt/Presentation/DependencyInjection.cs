@@ -2,7 +2,7 @@
 
 namespace Presenation.Extensions.DependencyInjection
 {
-    internal static class ConfigureServices
+    public static class DependencyInjection
     {
         public static IServiceCollection AddPresenation(this IServiceCollection services)
         {
@@ -23,7 +23,7 @@ namespace Presenation.Extensions.DependencyInjection
             return services;
         }
 
-        public static WebApplication ConfigurePresentation(this WebApplication app)
+        public static WebApplication UsePresentation(this WebApplication app)
         {
             if (app.Environment.IsDevelopment())
             {

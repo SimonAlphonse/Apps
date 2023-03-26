@@ -9,14 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddPresenation();
 builder.Services.AddPersistence();
-builder.Services.Infrastructure();
+builder.Services.AddInfrastructure();
 builder.Services.AddApplication();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-app.ConfigurePresentation();
-app.Services.ConfigurePersistence();
+app.UsePresentation();
+//app.Services.UsePersistence();
 
 app.Run();
