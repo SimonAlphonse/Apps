@@ -56,7 +56,7 @@ namespace Domain.Managers
             var jsonRequest = JsonSerializer.Serialize(request);
             var payload = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
             var responseMessage = await _httpClient.PostAsync("chat/completions", payload, token);
-            var responseBody = responseMessage.Content.ReadAsStringAsync().Result;
+            var responseBody = responseMessage.Content.ReadAsStringAsync(token).Result;
 
             if (responseMessage.IsSuccessStatusCode)
             {
@@ -76,7 +76,7 @@ namespace Domain.Managers
             else
             {
                 _logger.LogInformation(responseBody);
-                throw new Exception($"{responseMessage.StatusCode} : {responseMessage.ReasonPhrase}");
+                throw new Exception($"{responseMessage.StatusCode} {responseMessage.ReasonPhrase} : {responseBody}");
             }
         }
     }

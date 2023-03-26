@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Application.Interfaces;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
@@ -20,7 +21,7 @@ namespace Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseInMemoryDatabase("db");
+            optionsBuilder.UseSqlite("Data Source=chat-database.db");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
