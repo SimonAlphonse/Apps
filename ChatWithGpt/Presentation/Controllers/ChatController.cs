@@ -18,9 +18,9 @@ namespace Presentation.Controllers
         }
 
         [HttpPost(Name = "[action]")]
-        public async Task<IActionResult> SendMessage(string title, string content, CancellationToken token)
+        public async Task<IActionResult> SendMessage(string title, string context, string content, CancellationToken token)
         {
-            var response = await _chatManager.SendMessage(title, content, token);
+            var response = await _chatManager.SendMessage(title, context, content, token);
 
             if (response != null)
             {

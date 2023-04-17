@@ -30,7 +30,7 @@ namespace Domain.Managers
             _temperature = Convert.ToDecimal(configuration.GetSection("Chat:Temperature").Value);
         }
 
-        public async Task<Response> SendMessage(string title, string content, CancellationToken token)
+        public async Task<Response> SendMessage(string title, string context, string content, CancellationToken token)
         {
             var messages = new List<Message>();
 
@@ -44,7 +44,12 @@ namespace Domain.Managers
                 }
             }
 
-            messages.Add(new Message { Role = Role.user.ToString(), Content = content.ToString() });
+            if(!string.IsNullOrWhiteSpace(context) && !messages.Any())
+            {
+                messages.Add(new Message { Role = Role.system.ToString(), Content = context });
+            }
+
+            messages.Add(new Message { Role = Role.user.ToString(), Content = content });
 
             var request = new Request
             {
