@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 
-namespace Applicatoin.Managers
+namespace Application.Managers
 {
     public interface IChatManager
     {

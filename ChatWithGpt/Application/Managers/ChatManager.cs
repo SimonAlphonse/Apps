@@ -8,7 +8,7 @@ using System.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 
-namespace Applicatoin.Managers
+namespace Application.Managers
 {
     public class ChatManager : IChatManager
     {
