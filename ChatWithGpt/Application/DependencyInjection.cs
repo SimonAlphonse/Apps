@@ -1,4 +1,4 @@
-﻿using Domain.Managers;
+﻿using Applicatoin.Managers;
 
 using Microsoft.Extensions.DependencyInjection;
 
