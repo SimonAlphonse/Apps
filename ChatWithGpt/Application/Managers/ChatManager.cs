@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Domain.Repositories;
 
+using Domain;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -34,6 +35,11 @@ namespace Application.Managers
         {
             var messages = new List<Message>();
 
+            if(!string.IsNullOrWhiteSpace(context))
+            {
+                messages.Add(new Message { Role = Role.system.ToString(), Content = context });
+            }
+
             if (title is not null)
             {
                 var chats = await _repository.Get(x => x.Title == title && x.StatusCode == HttpStatusCode.OK, token);
@@ -42,11 +48,6 @@ namespace Application.Managers
                     messages.Add(chat.Request.Messages.Last());
                     messages.Add(chat.Response.Choices.Last().Message);
                 }
-            }
-
-            if(!string.IsNullOrWhiteSpace(context) && !messages.Any())
-            {
-                messages.Add(new Message { Role = Role.system.ToString(), Content = context });
             }
 
             messages.Add(new Message { Role = Role.user.ToString(), Content = content });
