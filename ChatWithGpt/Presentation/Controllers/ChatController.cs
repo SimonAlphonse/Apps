@@ -1,6 +1,7 @@
-using Domain.Managers;
+using Application.Managers;
 
 using Microsoft.AspNetCore.Mvc;
+using Presentation.Models;
 
 namespace Presentation.Controllers
 {
@@ -18,9 +19,9 @@ namespace Presentation.Controllers
         }
 
         [HttpPost(Name = "[action]")]
-        public async Task<IActionResult> SendMessage(string title, string context, string content, CancellationToken token)
+        public async Task<IActionResult> SendMessage([FromBody] SendMessageParams messageParams, CancellationToken token)
         {
-            var response = await _chatManager.SendMessage(title, context, content, token);
+            var response = await _chatManager.SendMessage(messageParams.Title, messageParams.Context, messageParams.Content, token);
 
             if (response != null)
             {
